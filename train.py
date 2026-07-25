@@ -6,6 +6,7 @@ from dataloader import get_dataloaders
 from models.unet import UNet
 from utils import save_checkpoints
 from metrics import pixel_accuracy, dice_score, mean_iou
+from plot_utils import plot_training_history
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -18,7 +19,9 @@ EPOCHS = 30
 
 def main():
 
-    train_loader, val_loader = get_dataloaders()
+    train_loader, val_loader = get_dataloaders(
+        batch_size=BATCH_SIZE,
+    )
 
     model = UNet(
         in_channels=3,
@@ -34,6 +37,15 @@ def main():
 
     best_loss = float("inf")
 
+    # History
+    train_losses = []
+    val_losses = []
+
+    pixel_accs = []
+    dice_scores = []
+    mious = []
+
+    # Training
     for epoch in range(EPOCHS):
 
         train_loss = train_one_epoch(
@@ -48,6 +60,14 @@ def main():
             val_loader,
             criterion,
         )
+
+        # Save history
+        train_losses.append(train_loss)
+        val_losses.append(val_loss)
+
+        pixel_accs.append(pixel_acc)
+        dice_scores.append(dice)
+        mious.append(miou)
 
         print(
             f"Epoch {epoch+1}/{EPOCHS}"
@@ -68,6 +88,15 @@ def main():
                 epoch=epoch,
                 filename="best_model.pth",
             )
+
+    # Plot Training Curves
+    plot_training_history(
+        train_losses=train_losses,
+        val_losses=val_losses,
+        pixel_accs=pixel_accs,
+        dice_scores=dice_scores,
+        mious=mious,
+    )
 
 
 def train_one_epoch(
