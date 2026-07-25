@@ -1,0 +1,22 @@
+data/
+.vscode/
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Jupyter checkpoint caches
+.ipynb_checkpoints/
+
+models/__pycache__
+
+# remove .pth
+*.pth
+*.pt
