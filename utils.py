@@ -1,25 +1,40 @@
 import torch
 
 
-def save_checkpoints(model, optimizer, epoch, filename):
-    checkpoint = {
-        "epoch": epoch,
-        "model_state_dict": model.state_dict(),
-        "optimizer_state_dict": optimizer.state_dict(),
-    }
+def save_checkpoint(
+    model,
+    optimizer,
+    epoch,
+    filename,
+):
+    torch.save(
+        {
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+        },
+        filename,
+    )
 
-    torch.save(checkpoint, filename)
-    print(f"Checkpoint saved to {filename}")
 
+def load_checkpoint(
+    model,
+    path,
+    device,
+    optimizer=None,
+):
+    checkpoint = torch.load(
+        path,
+        map_location=device,
+    )
 
-def load_checkpoint(model, path, device, optimizer=None):
-    checkpoint = torch.load(path, map_location=device)
-
-    model.load_state_dict(checkpoint["model_state_dict"])
+    model.load_state_dict(
+        checkpoint["model_state_dict"]
+    )
 
     if optimizer is not None:
-        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-
-    print(f"Loaded checkpoint from {path}")
+        optimizer.load_state_dict(
+            checkpoint["optimizer_state_dict"]
+        )
 
     return checkpoint["epoch"]

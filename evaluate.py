@@ -8,9 +8,8 @@ from models.unet import UNet
 from train import validate
 from utils import load_checkpoint
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-CHECKPOINT_PATH = "best_model.pth"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 NUM_CLASSES = 32
 BATCH_SIZE = 8
@@ -35,39 +34,34 @@ def main():
     load_checkpoint(
         model=model,
         optimizer=None,
-        path=CHECKPOINT_PATH,
+        path="best_model.pth",
         device=DEVICE,
     )
 
-    val_loss, pixel_acc, dice, miou = validate(
+    val_loss, pixel, dice, miou = validate(
         model,
         val_loader,
         criterion,
     )
 
     report = f"""
-==================================================
-            Evaluation Report
-==================================================
+================ Evaluation ================
 
-Model              : U-Net
-Dataset            : CamVid
-Resolution         : 256 x 256
+Model            : U-Net
+Dataset          : CamVid
 
-Validation Loss    : {val_loss:.4f}
-Pixel Accuracy     : {pixel_acc:.4f}
-Dice Score         : {dice:.4f}
-Mean IoU           : {miou:.4f}
+Validation Loss  : {val_loss:.4f}
+Pixel Accuracy   : {pixel:.4f}
+Dice Score       : {dice:.4f}
+Mean IoU         : {miou:.4f}
 
-==================================================
+============================================
 """
 
     print(report)
 
     with open(RESULTS_DIR / "metrics.txt", "w") as f:
         f.write(report)
-
-    print("Saved metrics to results/metrics.txt")
 
 
 if __name__ == "__main__":

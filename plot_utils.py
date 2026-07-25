@@ -4,47 +4,51 @@ import matplotlib.pyplot as plt
 
 
 def plot_training_history(
-    train_losses,
-    val_losses,
-    pixel_accs,
-    dice_scores,
-    mious,
+    history,
     save_dir="results",
 ):
     save_dir = Path(save_dir)
     save_dir.mkdir(exist_ok=True)
 
-    epochs = range(1, len(train_losses) + 1)
+    epochs = range(1, len(history["train_loss"]) + 1)
 
-    # Loss
     plt.figure(figsize=(8, 5))
 
-    plt.plot(epochs, train_losses, label="Train Loss")
-    plt.plot(epochs, val_losses, label="Validation Loss")
+    plt.plot(epochs, history["train_loss"], label="Train")
+    plt.plot(epochs, history["val_loss"], label="Validation")
 
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.title("Training Curve")
+
     plt.legend()
     plt.grid(True)
 
-    plt.savefig(save_dir / "loss_curve.png", dpi=300, bbox_inches="tight")
+    plt.tight_layout()
+
+    plt.savefig(
+        save_dir / "loss_curve.png",
+        dpi=300,
+    )
+
     plt.close()
 
-    # Metrics
     plt.figure(figsize=(8, 5))
 
-    plt.plot(epochs, pixel_accs, label="Pixel Accuracy")
-    plt.plot(epochs, dice_scores, label="Dice")
-    plt.plot(epochs, mious, label="mIoU")
+    plt.plot(epochs, history["pixel_acc"], label="Pixel Accuracy")
+    plt.plot(epochs, history["dice"], label="Dice")
+    plt.plot(epochs, history["miou"], label="mIoU")
 
     plt.xlabel("Epoch")
     plt.ylabel("Score")
-    plt.title("Validation Metrics")
+
     plt.legend()
     plt.grid(True)
 
-    plt.savefig(save_dir / "metrics_curve.png", dpi=300, bbox_inches="tight")
-    plt.close()
+    plt.tight_layout()
 
-    print("Saved training plots.")
+    plt.savefig(
+        save_dir / "metrics_curve.png",
+        dpi=300,
+    )
+
+    plt.close()
