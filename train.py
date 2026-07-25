@@ -12,7 +12,7 @@ from utils import save_checkpoint
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 NUM_CLASSES = 32
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 EPOCHS = 100
 LEARNING_RATE = 3e-4
 WEIGHT_DECAY = 1e-4

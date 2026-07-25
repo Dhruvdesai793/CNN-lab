@@ -3,14 +3,18 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 
-IMAGE_SIZE = 256
+IMAGE_HEIGHT = 480
+IMAGE_WIDTH = 640
 
 MEAN = (0.485, 0.456, 0.406)
 STD = (0.229, 0.224, 0.225)
 
 
 train_transform = A.Compose([
-    A.Resize(IMAGE_SIZE, IMAGE_SIZE),
+    A.Resize(
+        height=IMAGE_HEIGHT,
+        width=IMAGE_WIDTH,
+    ),
 
     A.HorizontalFlip(p=0.5),
 
@@ -43,7 +47,10 @@ train_transform = A.Compose([
 
 
 val_transform = A.Compose([
-    A.Resize(IMAGE_SIZE, IMAGE_SIZE),
+    A.Resize(
+        height=IMAGE_HEIGHT,
+        width=IMAGE_WIDTH,
+    ),
 
     A.Normalize(
         mean=MEAN,
