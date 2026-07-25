@@ -28,7 +28,7 @@ def plot_training_history(
     plt.legend()
     plt.grid(True)
 
-    plt.savefig(save_dir / "loss_curve.png")
+    plt.savefig(save_dir / "loss_curve.png", dpi=300, bbox_inches="tight")
     plt.close()
 
     # Metrics
@@ -44,7 +44,7 @@ def plot_training_history(
     plt.legend()
     plt.grid(True)
 
-    plt.savefig(save_dir / "metrics_curve.png")
+    plt.savefig(save_dir / "metrics_curve.png", dpi=300, bbox_inches="tight")
     plt.close()
 
     print("Saved training plots.")

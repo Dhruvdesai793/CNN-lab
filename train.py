@@ -14,7 +14,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 NUM_CLASSES = 32
 LEARNING_RATE = 1e-4
 BATCH_SIZE = 8
-EPOCHS = 30
+EPOCHS = 100
 
 
 def main():
