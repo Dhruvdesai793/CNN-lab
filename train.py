@@ -1,3 +1,5 @@
+import time
+
 import torch
 import torch.nn as nn
 from tqdm import tqdm
@@ -19,7 +21,16 @@ WEIGHT_DECAY = 1e-4
 EARLY_STOPPING = 15
 
 
+def format_time(seconds):
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = int(seconds % 60)
+
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+
 def train_epoch(model, loader, optimizer, criterion):
+
     model.train()
 
     total_loss = 0.0
@@ -70,6 +81,7 @@ def validate(model, loader, criterion):
 
         outputs = model(images)
 
+
         loss += criterion(outputs, masks).item()
         pixel += pixel_accuracy(outputs, masks)
         dice += dice_score(outputs, masks, NUM_CLASSES)
@@ -86,6 +98,8 @@ def validate(model, loader, criterion):
 
 
 def main():
+
+    print(f"\nUsing Device : {DEVICE}\n")
 
     train_loader, val_loader = get_dataloaders(
         batch_size=BATCH_SIZE,
@@ -119,9 +133,16 @@ def main():
     }
 
     best_loss = float("inf")
+    best_epoch = 0
+    best_miou = 0.0
+
     patience = 0
 
+    total_start = time.time()
+
     for epoch in range(EPOCHS):
+
+        epoch_start = time.time()
 
         train_loss = train_epoch(
             model,
@@ -146,8 +167,11 @@ def main():
 
         lr = optimizer.param_groups[0]["lr"]
 
+        epoch_time = time.time() - epoch_start
+
         print(
             f"Epoch {epoch+1:03}/{EPOCHS}"
+            f" | Time {epoch_time:6.1f}s"
             f" | LR {lr:.2e}"
             f" | Train {train_loss:.4f}"
             f" | Val {val_loss:.4f}"
@@ -159,6 +183,9 @@ def main():
         if val_loss < best_loss:
 
             best_loss = val_loss
+            best_epoch = epoch + 1
+            best_miou = miou
+
             patience = 0
 
             save_checkpoint(
@@ -176,7 +203,20 @@ def main():
                 print("\nEarly stopping.")
                 break
 
+    total_time = time.time() - total_start
+
     plot_training_history(history)
+
+    print("\n" + "=" * 55)
+    print("Training Summary")
+    print("=" * 55)
+    print(f"Best Epoch          : {best_epoch}")
+    print(f"Best Validation     : {best_loss:.4f}")
+    print(f"Best mIoU           : {best_miou:.4f}")
+    print(f"Epochs Completed    : {len(history['train_loss'])}")
+    print(f"Average Epoch Time  : {total_time / len(history['train_loss']):.1f} sec")
+    print(f"Total Training Time : {format_time(total_time)}")
+    print("=" * 55)
 
 
 if __name__ == "__main__":

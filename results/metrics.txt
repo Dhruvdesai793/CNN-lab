@@ -1,12 +1,29 @@
+Model: UNet
+Device: cuda
+Input Size: 960x720
+Inference Time: 310.72 ms
+FPS: 3.22
 
-================ Evaluation ================
-
-Model            : U-Net
-Dataset          : CamVid
-
-Validation Loss  : 0.3431
-Pixel Accuracy   : 0.8974
-Dice Score       : 0.4625
-Mean IoU         : 0.3830
-
-============================================
+Detected Classes:
+- Animal
+- Bicyclist
+- Building
+- Car
+- ColumnPole
+- LaneMkgsDriv
+- MiscText
+- OtherMoving
+- ParkingBlock
+- Pedestrian
+- Road
+- RoadShoulder
+- Sidewalk
+- SignSymbol
+- Sky
+- SUVPickupTruck
+- TrafficLight
+- Tree
+- TruckBus
+- VegetationMisc
+- Void
+- Wall
